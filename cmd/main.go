@@ -2,29 +2,38 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
-	_ "github/lib/pq"
 	"log"
+	"net"
+
+	"github.com/MaximTretjakov/CRUD/internal/server"
+	"github.com/MaximTretjakov/CRUD/pkg/crud"
+	_ "github.com/lib/pq"
+	"google.golang.org/grpc"
 )
 
 func main() {
-	var id int
-	connStr := "user=postgres password=postgres dbname=postgres sslmode=disable"
-
-	db, err := sql.Open("postgres", connStr)
+	// create database connection
+	db, err := sql.Open("postgres", "user=postgres password=postgres dbname=postgres sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
 
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
-	result, err := db.Query("select id, name from users where id = ?", 1)
+	// create grpc server
+	s := grpc.NewServer()
+	srv := &server.CRUDServer{DbConn: db}
+	crud.RegisterCRUDServer(s, srv)
+
+	l, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatal(err)
 	}
-	result.Scan(&id)
-	fmt.Println(id)
+
+	if err := s.Serve(l); err != nil {
+		log.Fatal(err)
+	}
 }
