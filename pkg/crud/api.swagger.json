@@ -19,7 +19,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiResponse"
+              "$ref": "#/definitions/apiStatus"
             }
           },
           "default": {
@@ -42,7 +42,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiResponse"
+              "$ref": "#/definitions/apiStatus"
             }
           },
           "default": {
@@ -77,20 +77,6 @@
             "in": "query",
             "required": false,
             "type": "string"
-          },
-          {
-            "name": "created_at",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "date-time"
-          },
-          {
-            "name": "updated_at",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "date-time"
           }
         ],
         "tags": [
@@ -141,20 +127,6 @@
             "in": "query",
             "required": false,
             "type": "string"
-          },
-          {
-            "name": "created_at",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "date-time"
-          },
-          {
-            "name": "updated_at",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "date-time"
           }
         ],
         "tags": [
@@ -170,7 +142,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiResponse"
+              "$ref": "#/definitions/apiStatus"
             }
           },
           "default": {
@@ -190,6 +162,10 @@
     "apiResponse": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
         "title": {
           "type": "string"
         },
@@ -199,14 +175,14 @@
         "tags": {
           "type": "string"
         },
-        "created_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated_at": {
-          "type": "string",
-          "format": "date-time"
-        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "apiStatus": {
+      "type": "object",
+      "properties": {
         "status": {
           "type": "string"
         }
