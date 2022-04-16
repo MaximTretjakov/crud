@@ -16,5 +16,3 @@ services:
         limits:
           cpus: '1'
           memory: 2G
-  redis:
-    image: "redis:alpine"

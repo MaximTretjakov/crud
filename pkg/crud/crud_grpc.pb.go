@@ -23,13 +23,13 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CRUDClient interface {
 	// create note
-	CreateNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	CreateNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Status, error)
 	// read note
 	ReadNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
 	// update note
-	UpdateNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	UpdateNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Status, error)
 	// delete note
-	DeleteNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	DeleteNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Status, error)
 }
 
 type cRUDClient struct {
@@ -40,8 +40,8 @@ func NewCRUDClient(cc grpc.ClientConnInterface) CRUDClient {
 	return &cRUDClient{cc}
 }
 
-func (c *cRUDClient) CreateNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *cRUDClient) CreateNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Status, error) {
+	out := new(Status)
 	err := c.cc.Invoke(ctx, "/api.CRUD/CreateNote", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -58,8 +58,8 @@ func (c *cRUDClient) ReadNote(ctx context.Context, in *Request, opts ...grpc.Cal
 	return out, nil
 }
 
-func (c *cRUDClient) UpdateNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *cRUDClient) UpdateNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Status, error) {
+	out := new(Status)
 	err := c.cc.Invoke(ctx, "/api.CRUD/UpdateNote", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -67,8 +67,8 @@ func (c *cRUDClient) UpdateNote(ctx context.Context, in *Request, opts ...grpc.C
 	return out, nil
 }
 
-func (c *cRUDClient) DeleteNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *cRUDClient) DeleteNote(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Status, error) {
+	out := new(Status)
 	err := c.cc.Invoke(ctx, "/api.CRUD/DeleteNote", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -81,13 +81,13 @@ func (c *cRUDClient) DeleteNote(ctx context.Context, in *Request, opts ...grpc.C
 // for forward compatibility
 type CRUDServer interface {
 	// create note
-	CreateNote(context.Context, *Request) (*Response, error)
+	CreateNote(context.Context, *Request) (*Status, error)
 	// read note
 	ReadNote(context.Context, *Request) (*Response, error)
 	// update note
-	UpdateNote(context.Context, *Request) (*Response, error)
+	UpdateNote(context.Context, *Request) (*Status, error)
 	// delete note
-	DeleteNote(context.Context, *Request) (*Response, error)
+	DeleteNote(context.Context, *Request) (*Status, error)
 	mustEmbedUnimplementedCRUDServer()
 }
 
@@ -95,16 +95,16 @@ type CRUDServer interface {
 type UnimplementedCRUDServer struct {
 }
 
-func (UnimplementedCRUDServer) CreateNote(context.Context, *Request) (*Response, error) {
+func (UnimplementedCRUDServer) CreateNote(context.Context, *Request) (*Status, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateNote not implemented")
 }
 func (UnimplementedCRUDServer) ReadNote(context.Context, *Request) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReadNote not implemented")
 }
-func (UnimplementedCRUDServer) UpdateNote(context.Context, *Request) (*Response, error) {
+func (UnimplementedCRUDServer) UpdateNote(context.Context, *Request) (*Status, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateNote not implemented")
 }
-func (UnimplementedCRUDServer) DeleteNote(context.Context, *Request) (*Response, error) {
+func (UnimplementedCRUDServer) DeleteNote(context.Context, *Request) (*Status, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteNote not implemented")
 }
 func (UnimplementedCRUDServer) mustEmbedUnimplementedCRUDServer() {}

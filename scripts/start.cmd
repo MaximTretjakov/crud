@@ -1,2 +1,2 @@
-echo "Docker compose start..."
+echo "Docker start..."
 docker-compose -f ../build/docker-compose.yml up
