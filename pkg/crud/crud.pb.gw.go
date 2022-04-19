@@ -68,12 +68,29 @@ func local_request_CRUD_CreateNote_0(ctx context.Context, marshaler runtime.Mars
 }
 
 var (
-	filter_CRUD_ReadNote_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_CRUD_ReadNote_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_CRUD_ReadNote_0(ctx context.Context, marshaler runtime.Marshaler, client CRUDClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Request
 	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+
+	protoReq.Id, err = runtime.Int64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -90,6 +107,23 @@ func request_CRUD_ReadNote_0(ctx context.Context, marshaler runtime.Marshaler, c
 func local_request_CRUD_ReadNote_0(ctx context.Context, marshaler runtime.Marshaler, server CRUDServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Request
 	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+
+	protoReq.Id, err = runtime.Int64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -212,7 +246,7 @@ func RegisterCRUDHandlerServer(ctx context.Context, mux *runtime.ServeMux, serve
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CRUD/ReadNote", runtime.WithHTTPPathPattern("/read"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CRUD/ReadNote", runtime.WithHTTPPathPattern("/read/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -344,7 +378,7 @@ func RegisterCRUDHandlerClient(ctx context.Context, mux *runtime.ServeMux, clien
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CRUD/ReadNote", runtime.WithHTTPPathPattern("/read"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CRUD/ReadNote", runtime.WithHTTPPathPattern("/read/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -408,7 +442,7 @@ func RegisterCRUDHandlerClient(ctx context.Context, mux *runtime.ServeMux, clien
 var (
 	pattern_CRUD_CreateNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"create"}, ""))
 
-	pattern_CRUD_ReadNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"read"}, ""))
+	pattern_CRUD_ReadNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"read", "id"}, ""))
 
 	pattern_CRUD_UpdateNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"update"}, ""))
 
