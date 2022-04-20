@@ -11,6 +11,7 @@ service CRUD{
     rpc CreateNote(Request) returns (Status){
         option (google.api.http) = {
             post: "/create"
+            body: "*"
         };
     }
 
@@ -24,14 +25,15 @@ service CRUD{
     // update note
     rpc UpdateNote(Request) returns (Status){
         option (google.api.http) = {
-            put: "/update"
+            put: "/update/{id}"
+            body: "*"
         };
     }
 
     // delete note
     rpc DeleteNote(Request) returns (Status){
         option (google.api.http) = {
-            delete: "/delete"
+            delete: "/delete/{id}"
         };
     }
 }
