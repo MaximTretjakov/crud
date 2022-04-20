@@ -71,7 +71,7 @@ func runGRPCServer(db *sql.DB) error {
 	srv := &server.CRUDServer{DbConn: db}
 	crud.RegisterCRUDServer(s, srv)
 
-	l, err := net.Listen("tcp", ":8080")
+	l, err := net.Listen("tcp", ":9000")
 	if err != nil {
 		return err
 	}
