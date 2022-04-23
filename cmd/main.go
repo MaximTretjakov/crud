@@ -6,7 +6,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"os"
 
 	"github.com/MaximTretjakov/CRUD/internal/db_conn"
 	"github.com/MaximTretjakov/CRUD/internal/server"
@@ -17,7 +16,11 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func runRestServer(db *sql.DB) error {
+func serveSwagger(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "C:\\Users\\KARMA\\Desktop\\CRUD\\swagger\\www\\swagger.json")
+}
+
+func runGWServer(db *sql.DB) error {
 	// Create a listener on TCP port
 	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
@@ -27,8 +30,10 @@ func runRestServer(db *sql.DB) error {
 	// Create a gRPC server object
 	s := grpc.NewServer()
 	srv := &server.CRUDServer{DbConn: db}
+
 	// Attach the Greeter service to the server
 	crud.RegisterCRUDServer(s, srv)
+
 	// Serve gRPC server
 	log.Println("Serving gRPC on 0.0.0.0:8080")
 	go func() {
@@ -47,45 +52,31 @@ func runRestServer(db *sql.DB) error {
 		log.Fatalln("Failed to dial server:", err)
 	}
 
-	gwmux := runtime.NewServeMux()
 	// Register Greeter
+	gwmux := runtime.NewServeMux()
 	err = crud.RegisterCRUDHandler(context.Background(), gwmux, conn)
 	if err != nil {
 		log.Fatalln("Failed to register gateway:", err)
 	}
 
-	gwServer := &http.Server{
-		Addr:    ":8090",
-		Handler: gwmux,
-	}
+	// Swagger-UI
+	mux := http.NewServeMux()
+	mux.Handle("/", gwmux)
+	mux.HandleFunc("/swagger.json", serveSwagger)
+	fs := http.FileServer(http.Dir("C:\\Users\\KARMA\\Desktop\\CRUD\\swagger\\www\\swagger-ui"))
+	mux.Handle("/swagger-ui/", http.StripPrefix("/swagger-ui", fs))
 
+	// GW start
 	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
-	log.Fatalln(gwServer.ListenAndServe())
-
-	return nil
-}
-
-func runGRPCServer(db *sql.DB) error {
-	// create grpc server
-	s := grpc.NewServer()
-	srv := &server.CRUDServer{DbConn: db}
-	crud.RegisterCRUDServer(s, srv)
-
-	l, err := net.Listen("tcp", ":9000")
+	err = http.ListenAndServe("localhost:8090", mux)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
-	if err := s.Serve(l); err != nil {
-		return err
-	}
 	return nil
 }
 
 func main() {
-	// get server type
-	serverType := os.Args[1]
-
 	// create database connection
 	db, err := db_conn.NewDBConnection("postgres", "user=postgres password=postgres dbname=postgres sslmode=disable")
 	if err != nil {
@@ -93,13 +84,8 @@ func main() {
 	}
 	defer db.Close()
 
-	if serverType == "rest" {
-		if err := runRestServer(db); err != nil {
-			log.Fatal(err)
-		}
-	} else {
-		if err := runGRPCServer(db); err != nil {
-			log.Fatal(err)
-		}
+	// run gw server
+	if err := runGWServer(db); err != nil {
+		log.Fatal(err)
 	}
 }
