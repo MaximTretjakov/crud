@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/MaximTretjakov/CRUD/internal/cache"
 	"github.com/MaximTretjakov/CRUD/internal/db_conn"
 	"github.com/MaximTretjakov/CRUD/internal/server"
 	"github.com/MaximTretjakov/CRUD/pkg/crud"
@@ -77,6 +78,13 @@ func runGWServer(db *sql.DB) error {
 }
 
 func main() {
+	// create redis cache
+	c, err := cache.NewRedisConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer c.Close()
+
 	// create database connection
 	db, err := db_conn.NewDBConnection("postgres", "user=postgres password=postgres dbname=postgres sslmode=disable")
 	if err != nil {

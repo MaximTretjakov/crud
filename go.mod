@@ -3,6 +3,7 @@ module github.com/MaximTretjakov/CRUD
 go 1.16
 
 require (
+	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
 	github.com/lib/pq v1.10.5
 	google.golang.org/genproto v0.0.0-20220401170504-314d38edb7de
