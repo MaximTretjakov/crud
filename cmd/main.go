@@ -17,7 +17,7 @@ import (
 )
 
 func serveSwagger(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "C:\\Users\\KARMA\\Desktop\\CRUD\\swagger\\www\\swagger.json")
+	http.ServeFile(w, r, "../swagger/www/swagger.json")
 }
 
 func runGWServer(db *sql.DB) error {
@@ -63,7 +63,7 @@ func runGWServer(db *sql.DB) error {
 	mux := http.NewServeMux()
 	mux.Handle("/", gwmux)
 	mux.HandleFunc("/swagger.json", serveSwagger)
-	fs := http.FileServer(http.Dir("C:\\Users\\KARMA\\Desktop\\CRUD\\swagger\\www\\swagger-ui"))
+	fs := http.FileServer(http.Dir("../swagger/www/swagger-ui"))
 	mux.Handle("/swagger-ui/", http.StripPrefix("/swagger-ui", fs))
 
 	// GW start
