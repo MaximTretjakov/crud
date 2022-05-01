@@ -48,7 +48,7 @@ service CRUD{
     // consume from kafka
     rpc KafkaReadMessage(KafkaRequest) returns (KafkaResponse){
         option (google.api.http) = {
-            get: "/api/v1/consume"
+            get: "/api/v1/response"
         };
     }
 }
