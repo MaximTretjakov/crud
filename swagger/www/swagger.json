@@ -11,7 +11,38 @@
     "application/json"
   ],
   "paths": {
-    "/create": {
+    "/api/v1/consume": {
+      "get": {
+        "summary": "consume from kafka",
+        "operationId": "CRUD_KafkaReadMessage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiKafkaResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "CRUD"
+        ]
+      }
+    },
+    "/api/v1/create": {
       "post": {
         "summary": "create note",
         "operationId": "CRUD_CreateNote",
@@ -35,7 +66,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/apiRequest"
+              "$ref": "#/definitions/apiCreateRequest"
             }
           }
         ],
@@ -44,7 +75,7 @@
         ]
       }
     },
-    "/delete/{id}": {
+    "/api/v1/delete/{id}": {
       "delete": {
         "summary": "delete note",
         "operationId": "CRUD_DeleteNote",
@@ -69,24 +100,6 @@
             "required": true,
             "type": "string",
             "format": "int64"
-          },
-          {
-            "name": "title",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "text",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "tags",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
@@ -94,7 +107,40 @@
         ]
       }
     },
-    "/read/{id}": {
+    "/api/v1/produce": {
+      "post": {
+        "summary": "produce to kafka",
+        "operationId": "CRUD_KafkaSendMessage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiKafkaResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiKafkaRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CRUD"
+        ]
+      }
+    },
+    "/api/v1/read/{id}": {
       "get": {
         "summary": "read note",
         "operationId": "CRUD_ReadNote",
@@ -119,24 +165,6 @@
             "required": true,
             "type": "string",
             "format": "int64"
-          },
-          {
-            "name": "title",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "text",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "tags",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
@@ -144,7 +172,7 @@
         ]
       }
     },
-    "/update/{id}": {
+    "/api/v1/update/{id}": {
       "put": {
         "summary": "update note",
         "operationId": "CRUD_UpdateNote",
@@ -175,7 +203,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/apiRequest"
+              "$ref": "#/definitions/apiUpdateRequest"
             }
           }
         ],
@@ -186,7 +214,7 @@
     }
   },
   "definitions": {
-    "apiRequest": {
+    "apiCreateRequest": {
       "type": "object",
       "properties": {
         "id": {
@@ -200,6 +228,22 @@
           "type": "string"
         },
         "tags": {
+          "type": "string"
+        }
+      }
+    },
+    "apiKafkaRequest": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "type": "string"
+        }
+      }
+    },
+    "apiKafkaResponse": {
+      "type": "object",
+      "properties": {
+        "response": {
           "type": "string"
         }
       }
@@ -229,6 +273,24 @@
       "type": "object",
       "properties": {
         "status": {
+          "type": "string"
+        }
+      }
+    },
+    "apiUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "tags": {
           "type": "string"
         }
       }

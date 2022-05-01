@@ -23,7 +23,7 @@ func main() {
 
 	c := crud.NewCRUDClient(conn)
 
-	request := crud.Request{
+	request := crud.CreateRequest{
 		Title: "Create blog title",
 		Text:  "Test create operation",
 		Tags:  "CRUD",
