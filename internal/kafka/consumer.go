@@ -18,22 +18,25 @@ func ConnectConsumer(brokersUrl []string) (sarama.Consumer, error) {
 	return conn, nil
 }
 
-func ReadMessageFromQueue(topic string) (string, error) {
-	brokersUrl := []string{"kafkahost1:9092", "kafkahost2:9092"}
+func ReadMessageFromQueue(topic string) error {
+	brokersUrl := []string{"localhost:9092"}
 
 	worker, err := ConnectConsumer(brokersUrl)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	consumer, err := worker.ConsumePartition(topic, 0, sarama.OffsetOldest)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	msg := <-consumer.Messages()
+	go func() {
+		for {
+			msg := <-consumer.Messages()
+			fmt.Printf("Received message Topic(%s) | Message(%s) \n", string(msg.Topic), string(msg.Value))
+		}
+	}()
 
-	fmt.Printf("Received message Topic(%s) | Message(%s) \n", string(msg.Topic), string(msg.Value))
-
-	return string(msg.Value), nil
+	return nil
 }

@@ -53,9 +53,8 @@ func (c *CRUDServer) KafkaSendMessage(ctx context.Context, r *crud.KafkaRequest)
 }
 
 func (c *CRUDServer) KafkaReadMessage(ctx context.Context, r *crud.KafkaRequest) (*crud.KafkaResponse, error) {
-	message, err := kafka.ReadMessageFromQueue("comments")
-	if err != nil {
+	if err := kafka.ReadMessageFromQueue("comments"); err != nil {
 		return nil, err
 	}
-	return &crud.KafkaResponse{Response: message + "200 Ok"}, nil
+	return &crud.KafkaResponse{Response: " 200 Ok"}, nil
 }
