@@ -39,7 +39,7 @@ func SendMessageToQueue(topic string, message []byte) error {
 		return err
 	}
 
-	fmt.Printf("Message stored in topic(%s)/partition(%d)/offset(%d)", topic, partition, offset)
+	fmt.Printf("Message stored in topic(%s)/partition(%d)/offset(%d)\n", topic, partition, offset)
 
 	return nil
 }
